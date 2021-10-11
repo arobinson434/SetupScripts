@@ -1,0 +1,8 @@
+cmake
+curl
+git
+make
+tmux
+tree
+vim
+
