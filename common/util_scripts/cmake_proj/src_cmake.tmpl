@@ -1,0 +1,21 @@
+set(BINARY ${CMAKE_PROJECT_NAME})
+set(BIN_LIB ${CMAKE_PROJECT_NAME}_lib)
+
+# Enable QT Meta Stuff and Find Packages
+#   Uncomment If Needed
+#set(CMAKE_AUTOMOC ON)
+#set(CMAKE_AUTORCC ON)
+#set(CMAKE_AUTOUIC ON)
+#find_package(Qt5 COMPONENTS Core REQUIRED)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+# Provide source files here
+set(SOURCES "main.cpp")
+
+add_library(${BIN_LIB} STATIC ${SOURCES})
+#target_link_libraries(${BIN_LIB} PUBLIC Qt5::Core)
+
+add_executable(${BINARY} main.cpp)
+target_link_libraries(${BINARY} PUBLIC ${BIN_LIB})
+

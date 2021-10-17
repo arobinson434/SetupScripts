@@ -1,0 +1,75 @@
+#!/bin/bash
+
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    echo "cmake_proj: Create an empty CMake Project"
+    echo "  Example: cmake_proj [flags] <project_name>"
+    echo "  Flags:"
+    echo "      -h, --help:          Print this help text"
+    echo "      --no-git:            Don't git init"
+    echo "      --no-gtest:          Don't pull in gtest"
+    echo "      --cxx_version=<ver>: Set CXX version, defaults to 14"
+    echo ""
+    exit 0
+fi;
+
+## Set params
+export PROJ_NAME=""
+export NO_GIT=FALSE
+export NO_GTEST=FALSE
+export CXX_VER=14
+SUB_VARS='$PROJ_NAME:$CXX_VER'
+SCRIPT_DIR=`dirname $BASH_SOURCE[0]`
+
+for var in "$@"; do
+    if [[ "$var" == "--no-git" ]]; then
+        NO_GIT=TRUE
+    elif [[ "$var" == "--no-gtest" ]]; then
+        NO_GTEST=TRUE
+    elif [[ "$var" == --cxx_version=* ]]; then
+        CXX_VER=`echo "$var" | sed -e 's/--cxx_version=\(\d*\)/\1/g'`
+    else
+        PROJ_NAME=$var
+    fi
+done
+
+## Verify Input
+if [[ "$PROJ_NAME" == "" ]]; then
+    echo "Please provide a project name"
+    echo ""
+    exit 1
+fi;
+
+echo "Generating CMake Project:"
+echo " Proj Name:   $PROJ_NAME"
+echo " Skip Git:    $NO_GIT"
+echo " Skip GTest:  $NO_GTEST"
+echo " CXX Version: $CXX_VER"
+
+## Setup Project
+mkdir `pwd`/$PROJ_NAME
+envsubst "$SUB_VARS" <$SCRIPT_DIR/top_cmake.tmpl> \
+    `pwd`/$PROJ_NAME/CMakeLists.txt
+
+mkdir `pwd`/$PROJ_NAME/src
+envsubst "$SUB_VARS" <$SCRIPT_DIR/src_cmake.tmpl> \
+    `pwd`/$PROJ_NAME/src/CMakeLists.txt
+cp $SCRIPT_DIR/src_main.cpp `pwd`/$PROJ_NAME/src/main.cpp
+
+if [[ -n $NO_GTEST ]]; then
+    echo "Pulling in gtest..."
+    mkdir `pwd`/$PROJ_NAME/test
+    mkdir `pwd`/$PROJ_NAME/lib
+    echo "add_subdirectory(test)"           >> `pwd`/$PROJ_NAME/CMakeLists.txt
+    echo "add_subdirectory(lib/googletest)" >> `pwd`/$PROJ_NAME/CMakeLists.txt
+    cp $SCRIPT_DIR/test_main.cpp `pwd`/$PROJ_NAME/test/main.cpp
+    envsubst "$SUB_VARS" <$SCRIPT_DIR/test_cmake.tmpl> \
+        `pwd`/$PROJ_NAME/test/CMakeLists.txt
+    git clone https://github.com/google/googletest.git \
+        `pwd`/$PROJ_NAME/lib/googletest &> /dev/null
+fi
+
+if [[ -n $NO_GIT ]]; then
+    echo "Initializing Git Project..."
+    git init &> /dev/null
+    echo "build/" > `pwd`/$PROJ_NAME/.gitignore
+fi
