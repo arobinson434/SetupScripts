@@ -14,6 +14,9 @@ for f in $COMMON_DIR/conf_writers/*.sh; do ./$f; done
 ## Copy Util Scripts
 mkdir -p ~/.util_scripts/
 cp -r $COMMON_DIR/util_scripts/ ~/.util_scripts/
+if ! grep -xq "export PATH=$PATH:~/.util_scripts/" ~/.bashrc ; then
+    echo "export PATH=$PATH:~/.util_scripts/" >> ~/.bashrc
+fi
 
 ## Add Aliases if not already added
 function add_alias() {

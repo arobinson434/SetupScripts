@@ -9,6 +9,28 @@ if [[ "$1" == "-h" || "$1" == "--help" ]]; then
     echo "      --no-gtest:          Don't pull in gtest"
     echo "      --cxx_version=<ver>: Set CXX version, defaults to 14"
     echo ""
+    echo "This tool will generate all of the boilerplate code for a CMake"
+    echo " project. The directory structure follows this pattern:"
+    echo "   $ cmake_proj Xyz"
+    echo "   $ tree Xyz/"
+    echo "      Xyz/"
+    echo "      ├── CMakeLists.txt"
+    echo "      ├── lib"
+    echo "      │   └── googletest"
+    echo "      │    └── ..."
+    echo "      ├── src"
+    echo "      │   ├── CMakeLists.txt"
+    echo "      │   ├── main.cpp"
+    echo "      │   ├── xyz.cpp"
+    echo "      │   └── xyz.h"
+    echo "      └── test"
+    echo "          ├── CMakeLists.txt"
+    echo "          ├── main.cpp"
+    echo "          └── xyz_test.cpp"
+    echo ""
+    echo "A special thank you to Remy! Who's blog post about GTest with CMake"
+    echo " was a big help and influence on this script. Check out his blog"
+    echo " here: https://raymii.org/s/tutorials/Cpp_project_setup_with_cmake_and_unit_tests.html"
     exit 0
 fi;
 
@@ -17,7 +39,7 @@ export PROJ_NAME=""
 export NO_GIT=FALSE
 export NO_GTEST=FALSE
 export CXX_VER=14
-SUB_VARS='$PROJ_NAME:$CXX_VER'
+SUB_VARS='$PROJ_NAME:$PROJ_NAME_LOWER:$PROJ_NAME_UPPER:$CXX_VER'
 SCRIPT_DIR=`dirname $BASH_SOURCE[0]`
 
 for var in "$@"; do
@@ -31,6 +53,9 @@ for var in "$@"; do
         PROJ_NAME=$var
     fi
 done
+
+export PROJ_NAME_LOWER=`echo "$PROJ_NAME" | tr '[:upper:]' '[:lower:]'`
+export PROJ_NAME_UPPER=`echo "$PROJ_NAME" | tr '[:lower:]' '[:upper:]'`
 
 ## Verify Input
 if [[ "$PROJ_NAME" == "" ]]; then
@@ -53,6 +78,10 @@ envsubst "$SUB_VARS" <$SCRIPT_DIR/top_cmake.tmpl> \
 mkdir `pwd`/$PROJ_NAME/src
 envsubst "$SUB_VARS" <$SCRIPT_DIR/src_cmake.tmpl> \
     `pwd`/$PROJ_NAME/src/CMakeLists.txt
+envsubst "$SUB_VARS" <$SCRIPT_DIR/proj_cpp.tmpl> \
+    `pwd`/$PROJ_NAME/src/${PROJ_NAME_LOWER}.cpp
+envsubst "$SUB_VARS" <$SCRIPT_DIR/proj_h.tmpl> \
+    `pwd`/$PROJ_NAME/src/${PROJ_NAME_LOWER}.h
 cp $SCRIPT_DIR/src_main.cpp `pwd`/$PROJ_NAME/src/main.cpp
 
 if [[ -n $NO_GTEST ]]; then
@@ -64,6 +93,8 @@ if [[ -n $NO_GTEST ]]; then
     cp $SCRIPT_DIR/test_main.cpp `pwd`/$PROJ_NAME/test/main.cpp
     envsubst "$SUB_VARS" <$SCRIPT_DIR/test_cmake.tmpl> \
         `pwd`/$PROJ_NAME/test/CMakeLists.txt
+    envsubst "$SUB_VARS" <$SCRIPT_DIR/test.tmpl> \
+        `pwd`/$PROJ_NAME/test/${PROJ_NAME_LOWER}_test.cpp
     git clone https://github.com/google/googletest.git \
         `pwd`/$PROJ_NAME/lib/googletest &> /dev/null
 fi

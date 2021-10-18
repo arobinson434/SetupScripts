@@ -1,0 +1,7 @@
+#include "gtest/gtest.h"
+#include "${PROJ_NAME_LOWER}.h"
+
+TEST($PROJ_NAME, empty_test) {
+    $PROJ_NAME obj;
+    EXPECT_EQ (obj.empty(),  0);
+}
