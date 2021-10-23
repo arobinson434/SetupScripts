@@ -8,7 +8,7 @@ while read pkg
 done < $DISTRO_DIR/packagelist.txt
 
 function install_packages() {
-    apt update
-    apt install -y $@
+    sudo apt update
+    sudo apt install -y $@
 }
 

@@ -8,6 +8,6 @@ while read pkg
 done < $DISTRO_DIR/packagelist.txt
 
 function install_packages() {
-    yum install -y $@
+    sudo yum install -y $@
 }
 

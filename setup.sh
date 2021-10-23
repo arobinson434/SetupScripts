@@ -30,8 +30,8 @@ fi
 
 ######################
 ## Setup Diff-So-Fancy
-git clone https://github.com/so-fancy/diff-so-fancy.git /opt/diff-so-fancy/
-ln -s /opt/diff-so-fancy/diff-so-fancy /usr/bin/diff-so-fancy
+sudo git clone https://github.com/so-fancy/diff-so-fancy.git /opt/diff-so-fancy/
+sudo ln -s /opt/diff-so-fancy/diff-so-fancy /usr/bin/diff-so-fancy
 
 git config --global merge.tool vimdiff
 git config --global merge.conflictstyle diff3
@@ -53,4 +53,9 @@ git config --global color.diff.commit     "yellow bold"
 git config --global color.diff.old        "red bold"
 git config --global color.diff.new        "green bold"
 git config --global color.diff.whitespace "red reverse"
+
+##################
+## Closing Message
+echo "Setup Complete!"
+echo "  Run \`. ~/.bashrc\` to source new settings"
 

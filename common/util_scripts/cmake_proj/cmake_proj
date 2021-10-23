@@ -101,6 +101,8 @@ fi
 
 if [[ -n $NO_GIT ]]; then
     echo "Initializing Git Project..."
+    pushd `pwd`/$PROJ_NAME
     git init &> /dev/null
+    popd
     echo "build/" > `pwd`/$PROJ_NAME/.gitignore
 fi
