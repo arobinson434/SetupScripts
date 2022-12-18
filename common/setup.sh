@@ -27,9 +27,10 @@ function add_alias() {
     fi
 }
 
-add_alias gs "git status"
-add_alias gd "git diff"
+add_alias gs  "git status"
+add_alias gd  "git diff"
 add_alias gdc "git diff --cached"
+add_alias vi  "vim"
 
 ## Setup Prompt
 ps1_str="export PS1=\"\u@\[\033[01;32m\]\h\[\e[m\]:\[\033[01;34m\]\W\[\e[m\]\\$ \""

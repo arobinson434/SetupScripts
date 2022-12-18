@@ -25,7 +25,7 @@ if [[ -n "$GIT_USER" ]]; then
 fi
 
 if [[ -n "$GIT_EMAIL" ]]; then
-    git config --global user.name "$GIT_EMAIL"
+    git config --global user.email "$GIT_EMAIL"
 fi
 
 ######################
