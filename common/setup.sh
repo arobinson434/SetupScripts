@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export COMMON_DIR=`dirname $BASH_SOURCE[0]`
+source $COMMON_DIR/functions.sh
 
 ## Build Common Package List
 export PACKAGE_LIST=""
@@ -20,13 +21,7 @@ for f in $COMMON_DIR/util_scripts/*/; do
     fi
 done
 
-## Add Aliases if not already added
-function add_alias() {
-    if ! grep -xq "alias $1=\"$2\"" ~/.bashrc ; then
-        echo "alias $1=\"$2\"" >> ~/.bashrc
-    fi
-}
-
+## Add aliases
 add_alias gs  "git status"
 add_alias gd  "git diff"
 add_alias gdc "git diff --cached"
