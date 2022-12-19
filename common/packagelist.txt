@@ -1,7 +1,5 @@
 cmake
 curl
-gcc
-gcc-c++
 gettext
 git
 make
