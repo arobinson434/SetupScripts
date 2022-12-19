@@ -1,4 +1,4 @@
-# setupScripts
+# SetupScripts
 This repository houses scripts and configuration to setup a fresh Linux install
 according to my own preferences. Feel free to fork this project to apply your
 own preferences!
